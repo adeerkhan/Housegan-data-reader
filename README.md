@@ -15,23 +15,19 @@ Input Data
 Data: [RPLAN dataset](http://staff.ustc.edu.cn/~fuxm/projects/DeepLayout/index.html), which offers 60k vector-graphics floorplans designed by professional architects. 
 <br/>
  
-Requirtments
+Requirements
 ------
    
 ```
-pip install argparse
-pip install numpy
-pip install matplotlib
-pip install shapely
-pip install descartes 
+pip install tqdm argparse numpy matplotlib shapely descartes 
 
 ```
 
 How to run
 ------
+  1. Create new folder named as "rplan_dataset", and put all the rplan images into this.
+  2. Then run the following code in terminal "python run.py"  
   
-```python raster_to_json.py --path #rplan_dataset/#image_number.png```
-
 Output data format
 ------
 
