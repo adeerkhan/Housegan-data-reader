@@ -1,6 +1,7 @@
 import json
 import argparse
 import numpy as np
+import os
 # import matplotlib.pyplot as plt
 from shapely.geometry import Polygon
 # from descartes.patch import PolygonPatch
@@ -9,7 +10,7 @@ from read_dd import read_data
 import warnings
 
 
-def raster_to_json(line, print_door_warning):
+def raster_to_json(line, output_path, print_door_warning=False):
     """ convert extracted data from rasters to housegan ++ data format :  extract rooms type, bbox, doors, edges and neigbour rooms
                 
     """
@@ -274,8 +275,8 @@ def raster_to_json(line, print_door_warning):
     fp_id = line.split("/")[-1].split(".")[0]
   
     ### saving json files
-    with open(f"rplan_json/{fp_id}.json","w") as f:
-         json.dump(info, f)
+    with open(output_path, "w") as f:
+        json.dump(info, f)
 
 
 
@@ -294,7 +295,7 @@ def main():
     try:
         raster_to_json(line, print_door_warning=False)
     except (AssertionError, ValueError, IndexError) as e:
-        fp_id = line.split("/")[-1].split(".")[0]
+        fp_id = os.path.basename(line).split(".")[0]
 
         with open(f"failed_rplan_json/{fp_id}", "w") as f:
             f.write(str(e))

@@ -1,57 +1,30 @@
-import argparse
 import glob
-
-import subprocess
 import os
-
+from raster_to_json import raster_to_json
 from tqdm import tqdm
 
+# Note: Adjust the SOURCE_DIR and OUTPUT_DIR path as per your directory structure.
+SOURCE_DIR = r"rplan_dataset"
+OUTPUT_DIR = r"rplan_json"
 
-RPLAN_PATH = "rplan_dataset/floorplan_dataset"
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-def paths_to_ids(paths):
-    return [int(path.split("/")[-1].split(".")[0]) for path in paths]
-
-
-
-def main(limit: int | None, max_processes: int):
-
-    os.makedirs("rplan_json", exist_ok=True)
-    os.makedirs("failed_rplan_json", exist_ok=True)
-
-    ids = paths_to_ids(glob.glob(f"{RPLAN_PATH}/*.png"))
-
-    if limit is not None:
-        ids = ids[:limit]
-
-    done_ids = paths_to_ids(glob.glob("rplan_json/*.json"))
-    failed_ids = paths_to_ids(glob.glob("failed_rplan_json/*"))
-
-    todo_ids = list(set(ids) - set(done_ids) - set(failed_ids))
-
-    print(f"{len(todo_ids)=}")
-
-
-    # subprocess loop from: https://stackoverflow.com/a/4992640
-    processes = set()
-
-    for rplan_id in tqdm(todo_ids, smoothing=50/len(todo_ids)):
-        command = f'python raster_to_json.py --path rplan_dataset/floorplan_dataset/{rplan_id}.png || (touch failed_rplan_json/{rplan_id} && false)'
-
-        processes.add(subprocess.Popen(command, shell=True))
-        if len(processes) >= max_processes:
-            os.wait()
-            processes.difference_update([
-                p for p in processes if p.poll() is not None])
-
-
-if __name__ == "__main__":
-
-    argparser = argparse.ArgumentParser()
-
-    argparser.add_argument("--limit", type=int, default=None)
-    argparser.add_argument("--max_processes", type=int, default=8)
-
-    args = argparser.parse_args()
+def convert_png_to_json(png_path):
+    try:
+        
+        base_name = os.path.basename(png_path)
+        file_name = os.path.splitext(base_name)[0]
+        
     
-    main(limit=args.limit, max_processes=args.max_processes)
+        output_path = os.path.join(OUTPUT_DIR, f"{file_name}.json")
+        raster_to_json(png_path, output_path, print_door_warning=False)
+        
+        return f"Successfully converted {png_path} to JSON."
+    except Exception as e:
+        return f"Failed to convert {png_path}. Error: {e}"
+
+png_files = sorted(glob.glob(os.path.join(SOURCE_DIR, "*.png")), key=lambda x: int(os.path.splitext(os.path.basename(x))[0]))
+
+for png_path in tqdm(png_files, desc="Converting PNG files to JSON"):
+    result = convert_png_to_json(png_path)
+    print(result)
