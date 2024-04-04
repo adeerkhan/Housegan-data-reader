@@ -10,6 +10,8 @@ from read_dd import read_data
 import warnings
 
 
+
+
 def raster_to_json(line, output_path, print_door_warning=False):
     """ convert extracted data from rasters to housegan ++ data format :  extract rooms type, bbox, doors, edges and neigbour rooms
                 
@@ -22,19 +24,33 @@ def raster_to_json(line, output_path, print_door_warning=False):
     bbox_y2=[]
     walls=[]
 
-    room_type,poly,doors_, walls,out=read_data(line)
+    def is_valid_file(file_path):
+        return os.path.exists(file_path) and os.path.getsize(file_path) > 0
 
-    d=[]
-    all_doors=[]
-    for i in range(1,len(doors_)+1):
-        if((i)%4==0 ) & (i+1!=1):
-            d.append(doors_[i-1])
+    if not is_valid_file(line):
+        raise FileNotFoundError(f"File {line} does not exist or is empty.")
+    
+    # Read data from the file
+    room_type, poly, doors_, walls, out = read_data(line)
+    if not doors_ or not walls:
+        raise ValueError(f"No data found in file {line}. Check if the file is correct and not corrupted.")
+
+    all_doors = []
+    d = []
+    for i in range(1, len(doors_) + 1):
+        if (i % 4 == 0) and (i + 1 != 1):
+            d.append(doors_[i - 1])
             all_doors.append(d)
-            d=[]
-        elif(i==1):
-            d=[]
-        if(i%4!=0):
-            d.append(doors_[i-1])
+            d = []
+        elif i == 1:
+            d = []
+        if i % 4 != 0:
+            d.append(doors_[i - 1])
+    
+    # Ensure there's a check to ensure 'all_doors' has data before proceeding
+    if len(all_doors) < 1:
+        raise ValueError("No doors data available to process.")
+    
     kh=0
     al_dr=0
     for hd in range(len(all_doors)):
@@ -277,31 +293,40 @@ def raster_to_json(line, output_path, print_door_warning=False):
     ### saving json files
     with open(output_path, "w") as f:
         json.dump(info, f)
-
-
+    pass
 
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Structured3D 3D Visualization")
-    parser.add_argument("--path", required=True,
-                        help="dataset path", metavar="DIR")
+    parser.add_argument("--path", required=True, help="dataset path", metavar="DIR")
     return parser.parse_args()
 
 
+def log_error(file_path, error_message):
+    """
+    Logs the specified error message for the file_path to a dedicated error log file.
+    """
+    fp_id = os.path.basename(file_path).split(".")[0]
+    error_log_dir = "failed_rplan_json"
+    os.makedirs(error_log_dir, exist_ok=True)  # Ensure the directory exists
+    with open(f"{error_log_dir}/{fp_id}.txt", "w") as f:
+        f.write(error_message)
+    print(error_message)  # Optional: print the error message to the console as well
+
 def main():
     args = parse_args()
-    line=args.path
-
+    line = args.path
+    output_path = os.path.join("output_directory", os.path.basename(line).replace(".png", ".json"))  # Modify as necessary
     try:
-        raster_to_json(line, print_door_warning=False)
-    except (AssertionError, ValueError, IndexError) as e:
-        fp_id = os.path.basename(line).split(".")[0]
-
-        with open(f"failed_rplan_json/{fp_id}", "w") as f:
-            f.write(str(e))
+        raster_to_json(line, output_path, print_door_warning=False)
+    except FileNotFoundError:
+        log_error(line, f"File {line} not found. Please ensure the path is correct.")
+    except ValueError as e:
+        log_error(line, f"Value error during processing: {e}")
+    except Exception as e:
+        log_error(line, f"Unexpected error: {e}")
 
 if __name__ == "__main__":
-
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         main()
