@@ -19,8 +19,7 @@ Requirements
 ------
    
 ```
-pip install tqdm argparse numpy matplotlib shapely descartes 
-
+pip install tqdm argparse numpy matplotlib shapely descartes
 ```
 
 How to run
