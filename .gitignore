@@ -1,4 +1,5 @@
 dataset/
+failed_rplan_json/
 rplan_dataset/
 rplan_json/
 test_output/
