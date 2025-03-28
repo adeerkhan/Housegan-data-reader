@@ -95,4 +95,3 @@ def get_polygon(mask):
     pts = sort_points(mask, pts)
     poly = geo.Polygon(pts)
     return poly
-

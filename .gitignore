@@ -1,5 +1,10 @@
+dataset/
+rplan_dataset/
+rplan_json/
+test_output/
 __pycache__
 *.pyc
+*.rar
 *.pyo
 *.pyd
 *.pyw
