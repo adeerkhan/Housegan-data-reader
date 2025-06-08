@@ -141,8 +141,8 @@ def verify_results(target_dir, num_files_to_check=100):
         print(f"Type {room_type}: {count:4} ({percentage:5.1f}%)")
 
 def main():
-    source_dir = r"c:\Users\Adeer\github\Housegan-data-reader\rplan_json"
-    target_dir = r"c:\Users\Adeer\github\Housegan-data-reader\rplan_json_remapped"
+    source_dir = "Housegan-data-reader/rplan_json"
+    target_dir = "Housegan-data-reader/rplan_json_remapped"
     
     print("Room Type Filtering and Remapping")
     print("=" * 50)
