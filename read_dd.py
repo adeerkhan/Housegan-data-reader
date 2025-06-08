@@ -23,11 +23,11 @@ def read_door(door_img,img,tmp_diff):
 					elif(s[t] not in r):
 						r.append(s[t])
 				if(len(r)>=3):
-					 tmp3[k][h]=0	
+					tmp3[k][h]=0	
 				elif(len(r)==2):
 					has[r[0]]=1
 					has[r[1]]=1
-					tmp3[k][h]= has[0]*1+has[1]*2+has[3]*4+has[4]*8+has[5]*16+has[6]*32+has[7]*64+has[8]*128+has[9]*256
+					tmp3[k][h]= has[0]*1+has[1]*2+has[2]*4+has[3]*8+has[4]*16+has[5]*32+has[6]*64+has[7]*128+has[8]*256+has[9]*512
 	s=np.unique(tmp3)
 	tmp4=tmp3.copy()
 	for ks in range(len(s)):

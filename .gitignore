@@ -2,6 +2,7 @@ dataset/
 failed_rplan_json/
 rplan_dataset/
 rplan_json/
+rplan_json_remapped/
 test_output/
 __pycache__
 *.pyc

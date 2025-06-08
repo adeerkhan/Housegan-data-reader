@@ -4,7 +4,7 @@ import numpy as np
 from shapely.geometry import Polygon
 from read_dd import read_data
 import warnings
-from pathlib import Path  # Add this import for cross-platform path handling
+from pathlib import Path 
 
 def raster_to_json(line, fp_id, print_door_warning):
     """Convert extracted data from rasters to housegan++ data format: extract rooms type, bbox, doors, edges and neighbor rooms"""

@@ -50,7 +50,30 @@ ROOM_CLASS = {"living_room": 1, "kitchen": 2, "bedroom": 3, "bathroom": 4, "balc
 "ed_rm":[0], [0], [0], [0, 2], ..., [2], [2, 3], [2, 1], [2, 0], [2]] 
 ```
 
+Data Analysis and Room Type Remapping
+------
 
+### Detailed Analysis
+The `detailed_room_analysis.py` script offers more in-depth analysis including room type combinations, statistical distributions, and patterns within the dataset.
+
+### Room Type Remapping
+For datasets requiring continuous room type IDs, use `remap_room_types.py` to filter out rare room types (6: entrance, 16: unknown) and remap the remaining types to continuous IDs 1-10.
+
+**Original → Remapped Room Type Mapping:**
+```
+1 → 1 (Living room)
+2 → 2 (Kitchen)
+3 → 3 (Bedroom)
+4 → 4 (Bathroom)
+5 → 5 (Balcony)
+7 → 6 (Dining room)
+8 → 7 (Study room)
+10 → 8 (Storage)
+15 → 9 (Front door)
+17 → 10 (Interior door)
+```
+
+The remapping script filters out files containing room types 6 (entrance) and 16 (interior walls) (approximately 1.6% of files) and saves the processed files to `rplan_json_remapped/` directory.
 
 Citation
 ------
